@@ -43,17 +43,15 @@ namespace my_namespace
 } // namespace my_namespace
 
 // function define
-void algorithm_A(Board board, Player player, int index[])
+void algorithm_B(Board board, Player player, int index[])
 {
   static int round = 0;
   int row, col;
-  int player_cnt = 0, oppnent_cnt = 0;
   char player_color = player.get_color();
   Board copy_board = board;
   Player copy_player = player;
 
   // algorithm
-  srand(time(NULL) * time(NULL));
   my_namespace::alphabeta(copy_board, my_namespace::SEARCH_DEPTH, -inf, inf, true, &copy_player, index);
 
   // manual pending
@@ -84,7 +82,7 @@ namespace my_namespace
     int capa = board.get_capacity(x, y);
     char color = board.get_cell_color(x, y);
     char type = (capa == 3 ? 'c' : (capa == 5 ? 'e' : 'm'));
-    bool is_critical = (orbs == capa - 1 ? true : false);
+    bool is_critical = (orbs == (capa - 1) ? true : false);
     bool is_danger = false;
     int nx, ny;
     int n_orbs;
@@ -105,7 +103,7 @@ namespace my_namespace
       n_orbs = board.get_orbs_num(nx, ny);
       n_capa = board.get_capacity(nx, ny);
       n_type = (n_capa == 3 ? 'c' : (n_capa == 5 ? 'e' : 'm'));
-      is_n_critical = (n_orbs == n_capa - 1 ? true : false);
+      is_n_critical = (n_orbs == (n_capa - 1) ? true : false);
 
       if (n_color != 'w' && n_color != color)
       {
@@ -117,7 +115,7 @@ namespace my_namespace
 
         if (is_critical)
         {
-          score += n_orbs * 2;
+          score += (n_orbs * 2);
         }
       }
     }
