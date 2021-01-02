@@ -1,6 +1,7 @@
 #include <iostream>
 #include "../include/board.h"
 #include "../include/rules.h"
+#define __DEBUG__
 
 using namespace std;
 
@@ -77,6 +78,7 @@ void Board::print_current_board(int i, int j, int round)
     int orb_num;
     char symbol;
 
+#ifdef __DEBUG__
     // /*
     ////// Print out the current state of the board //////
     system(CLEAR);
@@ -135,6 +137,8 @@ void Board::print_current_board(int i, int j, int round)
     cout << "=============================================================" << endl
          << endl;
     // */
+
+#endif
 }
 
 bool Board::place_orb(int i, int j, Player *player)
