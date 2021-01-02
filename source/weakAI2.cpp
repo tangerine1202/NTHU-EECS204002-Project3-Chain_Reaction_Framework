@@ -46,8 +46,6 @@ namespace my_namespace
 void algorithm_A(Board board, Player player, int index[])
 {
   static int round = 0;
-  int row, col;
-  int player_cnt = 0, oppnent_cnt = 0;
   char player_color = player.get_color();
   Board copy_board = board;
   Player copy_player = player;
@@ -56,7 +54,7 @@ void algorithm_A(Board board, Player player, int index[])
   srand(time(NULL) * time(NULL));
   my_namespace::alphabeta(copy_board, my_namespace::SEARCH_DEPTH, -inf, inf, true, &copy_player, index);
 
-  // manual pending
+  // FIXME: manual pending
   /*
   char next_round_input = '*';
   board.print_current_board(index[0], index[1], round++);
@@ -67,10 +65,6 @@ void algorithm_A(Board board, Player player, int index[])
     cin >> next_round_input;
   }
   */
-
-  // place orb
-  // index[0] = row;
-  // index[1] = col;
 }
 
 namespace my_namespace
@@ -80,26 +74,57 @@ namespace my_namespace
   {
     int dx[8] = {-1, 0, 1, -1, 1, -1, 0, 1};
     int dy[8] = {-1, -1, -1, 0, 0, 1, 1, 1};
-    int cell_cnt = board.get_orbs_num(x, y);
+    int orbs = board.get_orbs_num(x, y);
+    int capa = board.get_capacity(x, y);
     char color = board.get_cell_color(x, y);
-    int nx, ny;
-    int n_cell_cnt;
-    char nc;
+    char type = (capa == 3 ? 'c' : (capa == 5 ? 'e' : 'm'));
+    bool is_critical = (orbs == (capa - 1) ? true : false);
+    bool is_danger = false;
+    int nx, ny, n_orbs, n_capa;
+    char n_color, n_type;
+    bool is_n_critical;
     value_type score = 0;
+
     for (int i = 0; i < 8; i++)
     {
       nx = x + dx[i];
       ny = y + dy[i];
-
       if (nx < 0 || nx >= 5 || ny < 0 || ny >= 6)
         continue;
 
-      nc = board.get_cell_color(nx, ny);
-      n_cell_cnt = board.get_orbs_num(nx, ny);
-      if (nc != color)
+      n_color = board.get_cell_color(nx, ny);
+      n_orbs = board.get_orbs_num(nx, ny);
+      n_capa = board.get_capacity(nx, ny);
+      n_type = (n_capa == 3 ? 'c' : (n_capa == 5 ? 'e' : 'm'));
+      is_n_critical = (n_orbs == (n_capa - 1) ? true : false);
+
+      if (n_color == 'b' && color == 'r' ||
+          n_color == 'r' && color == 'b')
       {
-        score += cell_cnt - n_cell_cnt;
+        if (is_n_critical)
+        {
+          score -= (10 - (capa - 1));
+          is_danger = true;
+        }
+
+        if (is_critical)
+        {
+          score += n_orbs * 2;
+        }
       }
+    }
+
+    if (!is_danger)
+    {
+      if (type == 'm')
+        score += 1;
+      else if (type == 'e')
+        score += 2;
+      else if (type == 'c')
+        score += 3;
+
+      if (is_critical)
+        score += 2;
     }
     return score;
   }
@@ -113,19 +138,21 @@ namespace my_namespace
     value_type minimizing_score = 0;
     char maximizing_color = maximizingPlayer.get_color();
     char minimizing_color = (maximizing_color == 'r' ? 'b' : 'r');
+    char curr_color;
 
     for (int i = 0; i < 5; i++)
       for (int j = 0; j < 6; j++)
       {
-        if (board.get_cell_color(i, j) == maximizing_color)
+        curr_color = board.get_cell_color(i, j);
+        if (curr_color == maximizing_color)
         {
           maximizing_cnt += 1;
           maximizing_score += get_place_score(board, i, j);
         }
-        else if (board.get_cell_color(i, j) == minimizing_color)
+        else if (curr_color == minimizing_color)
         {
           minimizing_cnt += 1;
-          minimizing_score += get_place_score(board, i, j);
+          // minimizing_score += get_place_score(board, i, j);
         }
       }
 
@@ -134,21 +161,7 @@ namespace my_namespace
     if (minimizing_cnt == 0)
       return inf;
 
-    /*
-  // FIXME: print board
-  char next_round_input = '*';
-  board.print_current_board(-1, -1, -1);
-  // FIXME: print score
-  cout << "maximizing score: " << maximizing_cnt << '\n';
-  cout << "minimizing score: " << minimizing_cnt << '\n';
-  while (next_round_input != 'y')
-  {
-    cout << "Next? (y/n): ";
-    cin >> next_round_input;
-  }
-  */
-
-    return maximizing_score - minimizing_score;
+    return maximizing_score + maximizing_cnt;
   }
 
   // alphabeta template
@@ -172,8 +185,6 @@ namespace my_namespace
         for (int j = 0; j < 6; j++)
           if (isPlaceLegal(&board, i, j, maximizingPlayer))
           {
-            copy_board = board;
-
             // init
             if (row == -1 || col == -1)
             {
@@ -181,22 +192,28 @@ namespace my_namespace
               col = j;
             }
 
+            copy_board = board;
             copy_board.place_orb(i, j, maximizingPlayer);
             v = alphabeta(copy_board, depth - 1, alpha, beta, false, maximizingPlayer, index);
 
             // FIXME: debug
-            // /*
+            /*
             if (depth == SEARCH_DEPTH)
             {
               cout << "Maximizing color: " << maximizingPlayer->get_color() << '\n';
               cout << "(" << i << ", " << j << ")"
                    << " v: " << v << '\n';
             }
-            // * /
+            */
 
             if (v > alpha)
             {
               alpha = v;
+              row = i;
+              col = j;
+            }
+            else if (v == alpha && (rand() % 3 == 0))
+            {
               row = i;
               col = j;
             }
@@ -224,8 +241,6 @@ namespace my_namespace
         for (int j = 0; j < 6; j++)
           if (isPlaceLegal(&board, i, j, minimizingPlayer))
           {
-            copy_board = board;
-
             // init
             if (row == -1 || col == -1)
             {
@@ -233,11 +248,17 @@ namespace my_namespace
               col = j;
             }
 
+            copy_board = board;
             copy_board.place_orb(i, j, minimizingPlayer);
             v = alphabeta(copy_board, depth - 1, alpha, beta, true, minimizingPlayer, index);
             if (v < beta)
             {
               beta = v;
+              row = i;
+              col = j;
+            }
+            else if (v == beta && (rand() % 3 == 0))
+            {
               row = i;
               col = j;
             }
