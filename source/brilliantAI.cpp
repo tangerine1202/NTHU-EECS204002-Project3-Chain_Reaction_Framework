@@ -29,7 +29,7 @@ using std::cout;
 #define max(a, b) ((a) > (b) ? (a) : (b))
 #define min(a, b) ((a) < (b) ? (a) : (b))
 #define inf 2147483647
-#define my_namespace brillentAI
+#define my_namespace brilliantAI
 
 namespace my_namespace
 {
