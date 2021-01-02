@@ -29,7 +29,7 @@ using std::cout;
 #define max(a, b) ((a) > (b) ? (a) : (b))
 #define min(a, b) ((a) < (b) ? (a) : (b))
 #define inf 2147483647
-#define my_namespace weakAI2
+#define my_namespace weakAI2_B
 
 namespace my_namespace
 {
@@ -43,7 +43,7 @@ namespace my_namespace
 } // namespace my_namespace
 
 // function define
-void algorithm_A(Board board, Player player, int index[])
+void algorithm_B(Board board, Player player, int index[])
 {
   static int round = 0;
   char player_color = player.get_color();
