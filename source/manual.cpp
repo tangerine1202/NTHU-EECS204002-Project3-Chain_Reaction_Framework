@@ -25,13 +25,16 @@ using namespace std;
  * 4. The function that print out the current board statement
 *************************************************************************/
 
-void algorithm_A(Board board, Player player, int index[])
+void algorithm_B(Board board, Player player, int index[])
 {
     static int round = 0;
     static int row, col;
 
     cout << "Player color: " << player.get_color() << '\n';
-    board.print_current_board(row, col, round++);
+    // board.print_current_board(row, col, round++);
+
+    algorithm_A(board, player, index);
+    cout << "recommend place: " << index[0] << ", " << index[1] << '\n';
 
     cin >> row >> col;
 
