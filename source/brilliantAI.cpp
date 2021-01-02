@@ -46,7 +46,6 @@ namespace my_namespace
 void algorithm_B(Board board, Player player, int index[])
 {
   static int round = 0;
-  int row, col;
   char player_color = player.get_color();
   Board copy_board = board;
   Player copy_player = player;
@@ -54,7 +53,7 @@ void algorithm_B(Board board, Player player, int index[])
   // algorithm
   my_namespace::alphabeta(copy_board, my_namespace::SEARCH_DEPTH, -inf, inf, true, &copy_player, index);
 
-  // manual pending
+  // FIXME: manual pending
   /*
   char next_round_input = '*';
   board.print_current_board(index[0], index[1], round++);
@@ -65,10 +64,6 @@ void algorithm_B(Board board, Player player, int index[])
     cin >> next_round_input;
   }
   */
-
-  // place orb
-  // index[0] = row;
-  // index[1] = col;
 }
 
 namespace my_namespace
@@ -105,11 +100,12 @@ namespace my_namespace
       n_type = (n_capa == 3 ? 'c' : (n_capa == 5 ? 'e' : 'm'));
       is_n_critical = (n_orbs == (n_capa - 1) ? true : false);
 
-      if (n_color != 'w' && n_color != color)
+      if (n_color == 'b' && color == 'r' ||
+          n_color == 'r' && color == 'b')
       {
         if (is_n_critical)
         {
-          score -= (n_orbs + 5);
+          score -= (10 - (capa - 1));
           is_danger = true;
         }
 
