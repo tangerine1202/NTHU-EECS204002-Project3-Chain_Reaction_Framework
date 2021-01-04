@@ -36,6 +36,7 @@ namespace my_namespace
   const int SEARCH_DEPTH = 4;
 
   // function declare
+  int get_place_score(Board &board, int x, int y);
   int evaluate(Board board, Player maximizingPlayer);
   int alphabeta(Board board, int depth, int alpha, int beta, bool isMaximizingPlayer, Player *maximizingPlayer, int index[]);
   bool isPlaceLegal(Board *board, const int row, const int col, Player *player);
