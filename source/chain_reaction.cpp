@@ -6,8 +6,7 @@
 
 using namespace std;
 
-int main()
-{
+int main(){
 
     Board board;
     Player red_player(RED);
@@ -17,21 +16,18 @@ int main()
     int round = 1;
     int index[2];
 
-    while (1)
-    {
+    while(1){
 
         //////////// Red Player operations ////////////
         algorithm_A(board, red_player, index);
         board.place_orb(index[0], index[1], &red_player);
 
-        if (rules_violation(red_player))
-            return 0;
+        if(rules_violation(red_player)) return 0;
 
         board.print_current_board(index[0], index[1], round);
         round++;
 
-        if (board.win_the_game(red_player) && !first_two_step)
-        {
+        if(board.win_the_game(red_player) && !first_two_step){
             cout << "Red Player won the game !!!" << endl;
             return 0;
         }
@@ -40,14 +36,12 @@ int main()
         algorithm_B(board, blue_player, index);
         board.place_orb(index[0], index[1], &blue_player);
 
-        if (rules_violation(blue_player))
-            return 0;
-
+        if(rules_violation(blue_player)) return 0;
+        
         board.print_current_board(index[0], index[1], round);
         round++;
 
-        if (board.win_the_game(blue_player) && !first_two_step)
-        {
+        if(board.win_the_game(blue_player) && !first_two_step){
             cout << "Blue Player won the game !!!" << endl;
             return 0;
         }
@@ -56,4 +50,4 @@ int main()
     }
 
     return 0;
-}
+} 
