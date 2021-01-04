@@ -29,16 +29,15 @@ using std::cout;
 #define max(a, b) ((a) > (b) ? (a) : (b))
 #define min(a, b) ((a) < (b) ? (a) : (b))
 #define inf 2147483647
-#define my_namespace weakAI2
+#define my_namespace AI_108062308
 
 namespace my_namespace
 {
   const int SEARCH_DEPTH = 4;
-  using value_type = int;
 
   // function declare
-  value_type evaluate(Board board, Player maximizingPlayer);
-  value_type alphabeta(Board board, int depth, value_type alpha, value_type beta, bool isMaximizingPlayer, Player *maximizingPlayer, int index[]);
+  int evaluate(Board board, Player maximizingPlayer);
+  int alphabeta(Board board, int depth, int alpha, int beta, bool isMaximizingPlayer, Player *maximizingPlayer, int index[]);
   bool isPlaceLegal(Board *board, const int row, const int col, Player *player);
 } // namespace my_namespace
 
@@ -54,24 +53,12 @@ void algorithm_A(Board board, Player player, int index[])
   if (round == 0)
     srand(time(NULL) * time(NULL));
   my_namespace::alphabeta(copy_board, my_namespace::SEARCH_DEPTH, -inf, inf, true, &copy_player, index);
-
-  // FIXME: manual pending
-  /*
-  char next_round_input = '*';
-  board.print_current_board(index[0], index[1], round++);
-  cout << "Player color: " << player.get_color() << '\n';
-  while (next_round_input != 'y')
-  {
-    cout << "Next round? (y/n): ";
-    cin >> next_round_input;
-  }
-  */
 }
 
 namespace my_namespace
 {
   // place score
-  value_type get_place_score(Board &board, int x, int y)
+  int get_place_score(Board &board, int x, int y)
   {
     int dx[8] = {-1, 0, 1, -1, 1, -1, 0, 1};
     int dy[8] = {-1, -1, -1, 0, 0, 1, 1, 1};
@@ -84,7 +71,7 @@ namespace my_namespace
     int nx, ny, n_orbs, n_capa;
     char n_color, n_type;
     bool is_n_critical;
-    value_type score = 0;
+    int score = 0;
 
     for (int i = 0; i < 8; i++)
     {
@@ -131,12 +118,12 @@ namespace my_namespace
   }
 
   // evaluator
-  value_type evaluate(Board board, Player maximizingPlayer)
+  int evaluate(Board board, Player maximizingPlayer)
   {
-    value_type maximizing_cnt = 0;
-    value_type minimizing_cnt = 0;
-    value_type maximizing_score = 0;
-    value_type minimizing_score = 0;
+    int maximizing_cnt = 0;
+    int minimizing_cnt = 0;
+    int maximizing_score = 0;
+    int minimizing_score = 0;
     char maximizing_color = maximizingPlayer.get_color();
     char minimizing_color = (maximizing_color == 'r' ? 'b' : 'r');
     char curr_color;
@@ -166,7 +153,7 @@ namespace my_namespace
   }
 
   // alphabeta template
-  value_type alphabeta(Board board, int depth, value_type alpha, value_type beta, bool isMaximizingPlayer, Player *maximizingPlayer, int index[])
+  int alphabeta(Board board, int depth, int alpha, int beta, bool isMaximizingPlayer, Player *maximizingPlayer, int index[])
   {
     if (depth == 0)
     {
@@ -174,7 +161,7 @@ namespace my_namespace
     }
 
     int row, col;
-    value_type v;
+    int v;
     Board copy_board;
     if (isMaximizingPlayer)
     {
