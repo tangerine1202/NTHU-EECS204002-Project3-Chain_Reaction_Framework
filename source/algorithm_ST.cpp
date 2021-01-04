@@ -141,7 +141,6 @@ namespace my_namespace
         else if (curr_color == minimizing_color)
         {
           minimizing_cnt += 1;
-          // minimizing_score += get_place_score(board, i, j);
         }
       }
 
@@ -184,16 +183,6 @@ namespace my_namespace
             copy_board = board;
             copy_board.place_orb(i, j, maximizingPlayer);
             v = alphabeta(copy_board, depth - 1, alpha, beta, false, maximizingPlayer, index);
-
-            // FIXME: debug
-            /*
-            if (depth == SEARCH_DEPTH)
-            {
-              cout << "Maximizing color: " << maximizingPlayer->get_color() << '\n';
-              cout << "(" << i << ", " << j << ")"
-                   << " v: " << v << '\n';
-            }
-            */
 
             if (v > alpha)
             {
